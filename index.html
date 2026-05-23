@@ -138,7 +138,7 @@
     font-size: 16px; color: rgba(250,250,247,0.25); flex-shrink: 0;
   }
 
-  /* ── REEL SCREEN ── */
+  /* ── REEL SCREEN — full flex column, no absolute positioning on content ── */
   #reel-screen {
     position: fixed;
     inset: 0;
@@ -149,7 +149,6 @@
   }
   #reel-screen.active { display: flex; }
 
-  /* Glow layers */
   .r-glow-tr {
     position: absolute; width: 70vw; height: 70vw;
     top: -20vw; right: -20vw; border-radius: 50%;
@@ -164,28 +163,23 @@
   }
   @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
 
-  /* Top accent bar */
   .r-bar {
     position: absolute; top: 0; left: 0; right: 0; height: 4px;
     background: linear-gradient(90deg, var(--terra), #f5b8a3, var(--terra));
-    z-index: 10;
-    transform: scaleX(0); transform-origin: left;
-    animation: none;
+    z-index: 10; transform: scaleX(0); transform-origin: left; animation: none;
   }
   .r-bar.animate { animation: barIn 0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
   @keyframes barIn { from{transform:scaleX(0)} to{transform:scaleX(1)} }
 
-  /* Left rule */
   .r-left-rule {
     position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
     background: linear-gradient(180deg, transparent 0%, var(--terra) 15%, var(--terra) 85%, transparent 100%);
-    opacity: 0; transform: scaleY(0); transform-origin: top;
-    animation: none;
+    opacity: 0; transform: scaleY(0); transform-origin: top; animation: none;
   }
   .r-left-rule.animate { animation: ruleIn 0.9s ease 0.5s forwards; }
   @keyframes ruleIn { to{opacity:0.2; transform:scaleY(1)} }
 
-  /* Controls row */
+  /* Controls — absolute, sits over the top */
   .r-controls {
     position: absolute;
     top: calc(env(safe-area-inset-top, 12px) + 6px);
@@ -194,42 +188,43 @@
     z-index: 20;
   }
   .r-back {
-    background: rgba(15,23,42,0.10);
-    border: 1px solid rgba(15,23,42,0.12);
+    background: rgba(15,23,42,0.10); border: 1px solid rgba(15,23,42,0.12);
     border-radius: 999px; padding: 6px 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px; font-weight: 600;
-    color: var(--ink-dim); cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+    color: var(--ink-dim); cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   .r-replay {
-    background: var(--terra);
-    border: none; border-radius: 999px; padding: 6px 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px; font-weight: 700;
-    color: white; cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
+    background: var(--terra); border: none; border-radius: 999px; padding: 6px 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700;
+    color: white; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
 
-  /* Brand row */
+  /* ── FLEX COLUMN LAYOUT — fills entire screen with no gaps ── */
+
+  /* Spacer pushes content below the controls + safe area */
+  .r-top-spacer {
+    flex-shrink: 0;
+    height: calc(env(safe-area-inset-top, 12px) + 84px);
+  }
+
+  /* Brand — in flow, centred */
   .r-brand {
-    position: absolute;
-    top: calc(env(safe-area-inset-top, 12px) + 42px);
-    left: 20px; right: 20px;
+    flex-shrink: 0;
     display: flex; align-items: center; justify-content: center; gap: 10px;
-    z-index: 5; opacity: 0; animation: none;
+    padding: 0 20px 16px;
+    position: relative; z-index: 5;
+    opacity: 0; animation: none;
   }
   .r-brand.animate { animation: fadeUp 0.6s ease 0.3s forwards; }
   .r-brand-icon {
-    width: 32px; height: 32px; border-radius: 50%;
+    width: 34px; height: 34px; border-radius: 50%;
     background: var(--ink);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .r-brand-icon svg { width: 16px; height: 16px; }
+  .r-brand-icon svg { width: 17px; height: 17px; }
   .r-brand-name {
-    font-size: 14px; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--ink);
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink);
   }
   .r-topic {
     font-size: 10px; font-weight: 600;
@@ -239,55 +234,50 @@
     padding: 4px 11px; border-radius: 999px; flex-shrink: 0;
   }
 
-  /* Main content — flush against brand and CTA, no centering gap */
+  /* Quote area — flex: 1 means it fills ALL remaining space */
   .r-main {
-    position: absolute;
-    top: calc(env(safe-area-inset-top, 12px) + 82px);
-    left: 0; right: 0; bottom: 68px;
+    flex: 1;
     display: flex; flex-direction: column;
     justify-content: center;
     padding: 0 24px;
+    position: relative; z-index: 5;
+    min-height: 0;
   }
 
   .r-q-symbol {
     font-family: 'DM Serif Display', Georgia, serif;
     font-size: min(72px, 16vw); line-height: 0.65;
     color: var(--terra); opacity: 0;
-    margin-bottom: 2px; display: block; user-select: none;
-    animation: none;
+    margin-bottom: 4px; display: block; user-select: none; animation: none;
   }
   .r-q-symbol.animate { animation: symbolIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.55s forwards; }
   @keyframes symbolIn { from{opacity:0;transform:translateY(-15px) scale(0.8)} to{opacity:0.2;transform:none} }
 
   .r-quote {
     font-family: 'DM Serif Display', Georgia, serif;
-    font-style: italic;
-    font-size: clamp(22px, 5.8vw, 38px);
-    line-height: 1.25; letter-spacing: -0.01em;
-    color: var(--ink);
-    opacity: 0; animation: none;
+    font-style: italic; line-height: 1.25; letter-spacing: -0.01em;
+    color: var(--ink); opacity: 0; animation: none;
   }
   .r-quote.animate { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.75s forwards; }
 
   .r-sub {
-    font-size: clamp(14px, 3.8vw, 18px); font-weight: 400;
+    font-size: clamp(15px, 4vw, 19px); font-weight: 400;
     color: var(--ink-dim); line-height: 1.5;
-    margin-top: 8px; max-width: 90%;
+    margin-top: 10px; max-width: 90%;
     opacity: 0; animation: none;
   }
   .r-sub.animate { animation: fadeUp 0.7s ease 1.3s forwards; }
 
   .r-rule {
     width: 0; height: 3px; background: var(--terra);
-    border-radius: 2px; margin-top: 12px;
-    animation: none;
+    border-radius: 2px; margin-top: 16px; animation: none;
   }
   .r-rule.animate { animation: ruleExpand 0.6s cubic-bezier(0.16,1,0.3,1) 1.5s forwards; }
   @keyframes ruleExpand { from{width:0} to{width:36px} }
 
   .r-source {
     display: inline-flex; align-items: center; gap: 7px;
-    margin-top: 10px;
+    margin-top: 12px;
     background: var(--cream-2); border: 1px solid var(--line);
     border-radius: 999px; padding: 6px 14px; width: fit-content;
     opacity: 0; animation: none;
@@ -298,26 +288,24 @@
     background: var(--terra); flex-shrink: 0;
     animation: pulse 2s ease 2.5s infinite;
   }
-  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.5); opacity:0.6} }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.5);opacity:0.6} }
   .r-source-text { font-size: 11px; font-weight: 500; color: var(--ink-faint); letter-spacing: 0.04em; }
 
-  /* CTA bar */
+  /* CTA — in flow at the bottom, no transform needed */
   .r-cta {
-    position: absolute; bottom: 0; left: 0; right: 0;
+    flex-shrink: 0;
     background: var(--ink);
-    padding: 12px 20px;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    padding: 16px 20px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    z-index: 5; transform: translateY(100%); animation: none;
+    z-index: 5; position: relative;
+    opacity: 0; animation: none;
   }
-  .r-cta.animate { animation: slideUp 0.7s cubic-bezier(0.16,1,0.3,1) 2.0s forwards; }
-  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-  .r-cta-q { font-size: 11px; font-weight: 500; color: rgba(250,250,247,0.5); margin-bottom: 2px; }
-  .r-cta-link {
-    font-size: 15px; font-weight: 700; color: #f5b8a3;
-  }
+  .r-cta.animate { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 2.0s forwards; }
+  .r-cta-q { font-size: 12px; font-weight: 500; color: rgba(250,250,247,0.5); margin-bottom: 3px; }
+  .r-cta-link { font-size: 16px; font-weight: 700; color: #f5b8a3; }
   .r-cta-icon {
-    width: 40px; height: 40px; border-radius: 50%;
+    width: 42px; height: 42px; border-radius: 50%;
     background: var(--terra);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     animation: arrowBounce 1.5s ease 3s infinite;
@@ -356,7 +344,7 @@
   <div class="quote-grid" id="quoteGrid"></div>
 </div>
 
-<!-- REEL SCREEN -->
+<!-- REEL SCREEN — flex column, no dead space -->
 <div id="reel-screen">
   <div class="r-glow-tr"></div>
   <div class="r-glow-bl"></div>
@@ -368,9 +356,11 @@
     <button class="r-replay" onclick="replayReel()">↺ Replay</button>
   </div>
 
+  <div class="r-top-spacer"></div>
+
   <div class="r-brand" id="rBrand">
     <div class="r-brand-icon">
-      <svg viewBox="0 0 28 28"><path d="M9 18 L14 8 L19 18" stroke="#fafaf7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="14" r="2.5" fill="#c85a3e"/></svg>
+      <svg viewBox="0 0 28 28"><path d="M9 18 L14 8 L19 18" stroke="#fafaf7" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="14" r="2.5" fill="#c85a3e"/></svg>
     </div>
     <span class="r-brand-name">AI Growth Catalyst</span>
     <span class="r-topic" id="rTopic"></span>
@@ -396,8 +386,6 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="#fafaf7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
   </div>
-
-
 </div>
 
 <script>
