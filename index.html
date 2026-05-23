@@ -188,7 +188,7 @@
   /* Controls row — back LEFT, replay RIGHT */
   .r-controls {
     position: absolute;
-    top: calc(env(safe-area-inset-top, 12px) + 8px);
+    top: calc(env(safe-area-inset-top, 12px) + 6px);
     left: 16px; right: 16px;
     display: flex; align-items: center; justify-content: space-between;
     z-index: 20;
@@ -196,25 +196,25 @@
   .r-back {
     background: rgba(15,23,42,0.10);
     border: 1px solid rgba(15,23,42,0.12);
-    border-radius: 999px; padding: 7px 14px;
+    border-radius: 999px; padding: 6px 12px;
     font-family: 'DM Sans', sans-serif;
-    font-size: 12px; font-weight: 600;
+    font-size: 11px; font-weight: 600;
     color: var(--ink-dim); cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
   .r-replay {
     background: var(--terra);
-    border: none; border-radius: 999px; padding: 7px 14px;
+    border: none; border-radius: 999px; padding: 6px 12px;
     font-family: 'DM Sans', sans-serif;
-    font-size: 12px; font-weight: 700;
+    font-size: 11px; font-weight: 700;
     color: white; cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Brand row — sits BELOW controls, centred */
+  /* Brand row — immediately below controls */
   .r-brand {
     position: absolute;
-    top: calc(env(safe-area-inset-top, 12px) + 52px);
+    top: calc(env(safe-area-inset-top, 12px) + 44px);
     left: 20px; right: 20px;
     display: flex; align-items: center; justify-content: center; gap: 10px;
     z-index: 5; opacity: 0; animation: none;
@@ -239,20 +239,20 @@
     padding: 4px 11px; border-radius: 999px; flex-shrink: 0;
   }
 
-  /* Main content — tighter to brand, fills space properly */
+  /* Main content — snug below brand, snug above CTA */
   .r-main {
     position: absolute;
-    top: calc(env(safe-area-inset-top, 12px) + 100px);
-    left: 0; right: 0; bottom: 80px;
+    top: calc(env(safe-area-inset-top, 12px) + 86px);
+    left: 0; right: 0; bottom: 72px;
     display: flex; flex-direction: column;
     justify-content: center; padding: 0 28px;
   }
 
   .r-q-symbol {
     font-family: 'DM Serif Display', Georgia, serif;
-    font-size: min(70px, 15vw); line-height: 0.65;
+    font-size: min(60px, 13vw); line-height: 0.65;
     color: var(--terra); opacity: 0;
-    margin-bottom: 6px; display: block; user-select: none;
+    margin-bottom: 4px; display: block; user-select: none;
     animation: none;
   }
   .r-q-symbol.animate { animation: symbolIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.55s forwards; }
@@ -269,15 +269,15 @@
 
   .r-sub {
     font-size: min(15px,3.5vw); font-weight: 400;
-    color: var(--ink-dim); line-height: 1.55;
-    margin-top: 10px; max-width: 85%;
+    color: var(--ink-dim); line-height: 1.5;
+    margin-top: 8px; max-width: 85%;
     opacity: 0; animation: none;
   }
   .r-sub.animate { animation: fadeUp 0.7s ease 1.3s forwards; }
 
   .r-rule {
     width: 0; height: 3px; background: var(--terra);
-    border-radius: 2px; margin-top: 14px;
+    border-radius: 2px; margin-top: 12px;
     animation: none;
   }
   .r-rule.animate { animation: ruleExpand 0.6s cubic-bezier(0.16,1,0.3,1) 1.5s forwards; }
@@ -285,7 +285,7 @@
 
   .r-source {
     display: inline-flex; align-items: center; gap: 7px;
-    margin-top: 10px;
+    margin-top: 8px;
     background: var(--cream-2); border: 1px solid var(--line);
     border-radius: 999px; padding: 5px 12px; width: fit-content;
     opacity: 0; animation: none;
@@ -303,8 +303,8 @@
   .r-cta {
     position: absolute; bottom: 0; left: 0; right: 0;
     background: var(--ink);
-    padding: 14px 20px;
-    padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    padding: 12px 20px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     z-index: 5; transform: translateY(100%); animation: none;
   }
