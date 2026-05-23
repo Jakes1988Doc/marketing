@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>AI Growth Catalyst — Reels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream:      #fafaf7;
+    --cream-2:    #f1f1ec;
+    --cream-3:    #e6e6df;
+    --ink:        #0f172a;
+    --ink-soft:   #1e293b;
+    --ink-dim:    #475569;
+    --ink-faint:  #94a3b8;
+    --terra:      #c85a3e;
+    --terra-deep: #a3432b;
+    --terra-soft: #fde7df;
+    --sage:       #4f7d3f;
+    --line:       rgba(15,23,42,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--ink);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* ── INDEX SCREEN ── */
+  #index-screen {
+    width: 100%; height: 100%;
+    background: var(--ink);
+    overflow-y: auto;
+    padding: env(safe-area-inset-top, 20px) 20px 40px;
+  }
+
+  .index-header {
+    padding: 24px 0 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .index-logo {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(250,250,247,0.08);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .index-logo svg { width: 16px; height: 16px; }
+  .index-brand {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(250,250,247,0.4);
+  }
+
+  .index-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-style: italic;
+    font-size: 28px; font-weight: 400;
+    line-height: 1.2;
+    color: var(--cream);
+    margin-bottom: 6px;
+  }
+  .index-sub {
+    font-size: 13px; color: rgba(250,250,247,0.4);
+    margin-bottom: 28px; line-height: 1.5;
+  }
+
+  .how-to {
+    background: rgba(200,90,62,0.12);
+    border: 1px solid rgba(200,90,62,0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+  }
+  .how-to-title {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: #f5b8a3; margin-bottom: 8px;
+  }
+  .how-to-steps {
+    list-style: none; display: flex; flex-direction: column; gap: 6px;
+  }
+  .how-to-steps li {
+    font-size: 13px; color: rgba(250,250,247,0.65);
+    line-height: 1.4; padding-left: 18px; position: relative;
+  }
+  .how-to-steps li::before {
+    content: attr(data-n);
+    position: absolute; left: 0;
+    font-size: 11px; font-weight: 700;
+    color: var(--terra); top: 1px;
+  }
+
+  .quote-grid {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .quote-card {
+    background: rgba(250,250,247,0.05);
+    border: 1px solid rgba(250,250,247,0.08);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+    transition: background 0.15s, border-color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .quote-card:active {
+    background: rgba(200,90,62,0.12);
+    border-color: rgba(200,90,62,0.3);
+  }
+  .card-num {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--terra);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;
+  }
+  .card-body { flex: 1; min-width: 0; }
+  .card-topic {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: #f5b8a3; margin-bottom: 3px;
+  }
+  .card-preview {
+    font-size: 13px; color: rgba(250,250,247,0.75);
+    line-height: 1.4;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-arrow {
+    font-size: 16px; color: rgba(250,250,247,0.25); flex-shrink: 0;
+  }
+
+  /* ── REEL SCREEN ── */
+  #reel-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #reel-screen.active { display: flex; }
+
+  /* Glow layers */
+  .r-glow-tr {
+    position: absolute; width: 70vw; height: 70vw;
+    top: -20vw; right: -20vw; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,90,62,0.10) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .r-glow-bl {
+    position: absolute; width: 60vw; height: 60vw;
+    bottom: -15vw; left: -15vw; border-radius: 50%;
+    background: radial-gradient(circle, rgba(184,132,58,0.07) 0%, transparent 60%);
+    pointer-events: none; animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+
+  /* Top accent bar */
+  .r-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--terra), #f5b8a3, var(--terra));
+    z-index: 10;
+    transform: scaleX(0); transform-origin: left;
+    animation: none;
+  }
+  .r-bar.animate { animation: barIn 0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
+  @keyframes barIn { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+
+  /* Left rule */
+  .r-left-rule {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(180deg, transparent 0%, var(--terra) 15%, var(--terra) 85%, transparent 100%);
+    opacity: 0; transform: scaleY(0); transform-origin: top;
+    animation: none;
+  }
+  .r-left-rule.animate { animation: ruleIn 0.9s ease 0.5s forwards; }
+  @keyframes ruleIn { to{opacity:0.2; transform:scaleY(1)} }
+
+  /* Back button */
+  .r-back {
+    position: absolute;
+    top: env(safe-area-inset-top, 16px);
+    left: 16px;
+    z-index: 20;
+    background: rgba(15,23,42,0.12);
+    border: none; border-radius: 999px;
+    padding: 8px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-dim); cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* Replay button */
+  .r-replay {
+    position: absolute;
+    top: env(safe-area-inset-top, 16px);
+    right: 16px;
+    z-index: 20;
+    background: var(--terra);
+    border: none; border-radius: 999px;
+    padding: 8px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 700;
+    color: white; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Main content */
+  .r-main {
+    position: absolute;
+    top: 72px; left: 0; right: 0;
+    bottom: 100px;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 0 28px;
+  }
+
+  /* Brand row — inside reel */
+  .r-brand {
+    position: absolute;
+    top: 18px; left: 60px; right: 80px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    z-index: 5;
+    opacity: 0; animation: none;
+  }
+  .r-brand.animate { animation: fadeUp 0.6s ease 0.3s forwards; }
+  .r-brand-icon {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .r-brand-icon svg { width: 10px; height: 10px; }
+  .r-brand-name {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .r-topic {
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--terra); background: var(--terra-soft);
+    border: 1px solid rgba(200,90,62,0.2);
+    padding: 3px 9px; border-radius: 999px;
+  }
+
+  .r-q-symbol {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: min(80px, 18vw); line-height: 0.65;
+    color: var(--terra); opacity: 0;
+    margin-bottom: 10px; display: block; user-select: none;
+    animation: none;
+  }
+  .r-q-symbol.animate { animation: symbolIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.55s forwards; }
+  @keyframes symbolIn { from{opacity:0;transform:translateY(-15px) scale(0.8)} to{opacity:0.2;transform:none} }
+
+  .r-quote {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-style: italic;
+    line-height: 1.3; letter-spacing: -0.01em;
+    color: var(--ink);
+    opacity: 0; animation: none;
+  }
+  .r-quote.animate { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.75s forwards; }
+
+  .r-sub {
+    font-size: min(15px,3.5vw); font-weight: 400;
+    color: var(--ink-dim); line-height: 1.6;
+    margin-top: 14px; max-width: 80%;
+    opacity: 0; animation: none;
+  }
+  .r-sub.animate { animation: fadeUp 0.7s ease 1.3s forwards; }
+
+  .r-rule {
+    width: 0; height: 3px; background: var(--terra);
+    border-radius: 2px; margin-top: 20px;
+    animation: none;
+  }
+  .r-rule.animate { animation: ruleExpand 0.6s cubic-bezier(0.16,1,0.3,1) 1.5s forwards; }
+  @keyframes ruleExpand { from{width:0} to{width:32px} }
+
+  .r-source {
+    display: inline-flex; align-items: center; gap: 7px;
+    margin-top: 14px;
+    background: var(--cream-2); border: 1px solid var(--line);
+    border-radius: 999px; padding: 5px 12px; width: fit-content;
+    opacity: 0; animation: none;
+  }
+  .r-source.animate { animation: fadeUp 0.6s ease 1.8s forwards; }
+  .r-source-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--terra); flex-shrink: 0;
+    animation: pulse 2s ease 2.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.5); opacity:0.6} }
+  .r-source-text { font-size: 10px; font-weight: 500; color: var(--ink-faint); letter-spacing: 0.04em; }
+
+  /* CTA bar */
+  .r-cta {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: var(--ink); padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    z-index: 5; transform: translateY(100%); animation: none;
+  }
+  .r-cta.animate { animation: slideUp 0.7s cubic-bezier(0.16,1,0.3,1) 2.0s forwards; }
+  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  .r-cta-q { font-size: 11px; font-weight: 500; color: rgba(250,250,247,0.5); margin-bottom: 2px; }
+  .r-cta-a { font-size: 13px; font-weight: 700; color: #f5b8a3; }
+  .r-cta-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--terra);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    animation: arrowBounce 1.5s ease 3s infinite;
+  }
+  @keyframes arrowBounce { 0%,100%{transform:translateX(0)} 50%{transform:translateX(4px)} }
+  .r-cta-icon svg { width: 16px; height: 16px; }
+
+  /* Instruction overlay */
+  .record-hint {
+    position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%);
+    background: rgba(15,23,42,0.85); color: rgba(250,250,247,0.8);
+    font-size: 12px; font-weight: 500; padding: 8px 16px;
+    border-radius: 999px; white-space: nowrap; z-index: 50;
+    opacity: 0; pointer-events: none;
+    animation: hintFade 3s ease 2.5s forwards;
+  }
+  @keyframes hintFade { 0%{opacity:0} 15%{opacity:1} 75%{opacity:1} 100%{opacity:0} }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+
+<!-- INDEX SCREEN -->
+<div id="index-screen">
+  <div class="index-header">
+    <div class="index-logo">
+      <svg viewBox="0 0 28 28"><path d="M9 18 L14 8 L19 18" stroke="#fafaf7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="14" r="2.5" fill="#c85a3e"/></svg>
+    </div>
+    <span class="index-brand">AI Growth Catalyst</span>
+  </div>
+
+  <p class="index-title">Quote Reels</p>
+  <p class="index-sub">Tap a quote to open fullscreen. Screen record &amp; post to Instagram.</p>
+
+  <div class="how-to">
+    <div class="how-to-title">How to record &amp; post</div>
+    <ol class="how-to-steps">
+      <li data-n="1">Swipe down on iPhone → Screen Recording → tap record</li>
+      <li data-n="2">Come back here, tap a quote below</li>
+      <li data-n="3">Wait for the animation to finish (~5 seconds)</li>
+      <li data-n="4">Stop recording from the status bar</li>
+      <li data-n="5">Open Instagram → + → Reel → select your video</li>
+    </ol>
+  </div>
+
+  <div class="quote-grid" id="quoteGrid"></div>
+</div>
+
+<!-- REEL SCREEN -->
+<div id="reel-screen">
+  <div class="r-glow-tr"></div>
+  <div class="r-glow-bl"></div>
+  <div class="r-bar" id="rBar"></div>
+  <div class="r-left-rule" id="rRule"></div>
+
+  <button class="r-back" onclick="goBack()">← Back</button>
+  <button class="r-replay" onclick="replayReel()">↺ Replay</button>
+
+  <div class="r-brand" id="rBrand">
+    <div class="r-brand-icon">
+      <svg viewBox="0 0 28 28"><path d="M9 18 L14 8 L19 18" stroke="#fafaf7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="14" r="2.5" fill="#c85a3e"/></svg>
+    </div>
+    <span class="r-brand-name">AI Growth Catalyst</span>
+    <span class="r-topic" id="rTopic"></span>
+  </div>
+
+  <div class="r-main">
+    <span class="r-q-symbol" id="rSymbol">&ldquo;</span>
+    <p class="r-quote" id="rQuote"></p>
+    <p class="r-sub" id="rSub"></p>
+    <div class="r-rule" id="rRuleEl"></div>
+    <div class="r-source" id="rSource">
+      <span class="r-source-dot"></span>
+      <span class="r-source-text">Real discovery call &mdash; anonymised</span>
+    </div>
+  </div>
+
+  <div class="r-cta" id="rCta">
+    <div>
+      <div class="r-cta-q">Does this sound familiar?</div>
+      <div class="r-cta-a">Free 15-min call &mdash; link in bio ↑</div>
+    </div>
+    <div class="r-cta-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fafaf7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </div>
+
+  <div class="record-hint" id="recordHint">⏺ Recording? Tap back when done</div>
+</div>
+
+<script>
+const quotes = [
+  {
+    num: "01",
+    topic: "On scaling",
+    quote: "I just want the business to feel less chaotic and more scalable.",
+    sub: "Not something flashy. Just something that works.",
+    fontSize: "clamp(30px,7vw,44px)"
+  },
+  {
+    num: "02",
+    topic: "On systems",
+    quote: "People end up acting like the integration layer between systems.",
+    sub: "Which obviously doesn't scale very well.",
+    fontSize: "clamp(30px,7vw,44px)"
+  },
+  {
+    num: "03",
+    topic: "On data",
+    quote: "The data technically existed somewhere in the business.",
+    sub: "It just wasn't connected or visible early enough for anyone to make good decisions.",
+    fontSize: "clamp(30px,7vw,44px)"
+  },
+  {
+    num: "04",
+    topic: "On leadership",
+    quote: "I feel like I spend most of my week reacting instead of actually leading the business strategically.",
+    sub: "",
+    fontSize: "clamp(22px,5.5vw,32px)"
+  },
+  {
+    num: "05",
+    topic: "On operations",
+    quote: "I'm basically the arbitration layer between a partial optimisation system and real-world commercial reality.",
+    sub: "",
+    fontSize: "clamp(22px,5.5vw,32px)"
+  },
+  {
+    num: "06",
+    topic: "On team",
+    quote: "One of the hidden costs is the mental load.",
+    sub: "Everyone feels constantly interrupted and reactive.",
+    fontSize: "clamp(36px,8vw,52px)"
+  },
+  {
+    num: "07",
+    topic: "On the call",
+    quote: "It didn't feel overly technical or sales-heavy.",
+    sub: "Which honestly makes these conversations a lot easier.",
+    fontSize: "clamp(36px,8vw,52px)"
+  },
+  {
+    num: "08",
+    topic: "On invoicing",
+    quote: "Manually chasing overdue payments feels like a relic.",
+    sub: "Every time I craft another reminder email, I think we should have a better system.",
+    fontSize: "clamp(36px,8vw,52px)"
+  },
+  {
+    num: "09",
+    topic: "On scheduling",
+    quote: "Manually cross-checking trainer schedules feels archaic.",
+    sub: "I often think this should just sync up on its own.",
+    fontSize: "clamp(30px,7vw,44px)"
+  },
+  {
+    num: "10",
+    topic: "On talent",
+    quote: "Highly capable people are basically acting as human data processors.",
+    sub: "Just to produce visibility the business should already have automatically.",
+    fontSize: "clamp(30px,7vw,44px)"
+  },
+];
+
+const animEls = ['rBar','rRule','rBrand','rSymbol','rQuote','rSub','rRuleEl','rSource','rCta'];
+
+function buildIndex() {
+  const grid = document.getElementById('quoteGrid');
+  quotes.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'quote-card';
+    card.innerHTML = `
+      <div class="card-num">${q.num}</div>
+      <div class="card-body">
+        <div class="card-topic">${q.topic}</div>
+        <div class="card-preview">${q.quote}</div>
+      </div>
+      <div class="card-arrow">›</div>
+    `;
+    card.addEventListener('click', () => openReel(i));
+    grid.appendChild(card);
+  });
+}
+
+function openReel(idx) {
+  const q = quotes[idx];
+
+  // Set content
+  document.getElementById('rTopic').textContent = q.topic;
+  document.getElementById('rQuote').textContent = q.quote;
+  document.getElementById('rQuote').style.fontSize = q.fontSize;
+  const subEl = document.getElementById('rSub');
+  subEl.textContent = q.sub;
+  subEl.style.display = q.sub ? 'block' : 'none';
+
+  // Show reel screen
+  document.getElementById('index-screen').style.display = 'none';
+  const reel = document.getElementById('reel-screen');
+  reel.classList.add('active');
+
+  // Trigger animations after tiny delay
+  setTimeout(() => startAnimations(), 50);
+}
+
+function startAnimations() {
+  animEls.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('animate');
+    void el.offsetWidth; // force reflow
+    el.classList.add('animate');
+  });
+  // Reset hint
+  const hint = document.getElementById('recordHint');
+  hint.style.animation = 'none';
+  void hint.offsetWidth;
+  hint.style.animation = '';
+}
+
+function replayReel() {
+  startAnimations();
+}
+
+function goBack() {
+  document.getElementById('reel-screen').classList.remove('active');
+  document.getElementById('index-screen').style.display = 'block';
+  animEls.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('animate');
+  });
+}
+
+buildIndex();
+</script>
+</body>
+</html>
